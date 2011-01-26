@@ -1,10 +1,11 @@
-package com.vidal.misc.plugin;
+package org.uva.maven.plugin;
 
 import junit.framework.Assert;
 
 import org.apache.maven.settings.Server;
 import org.junit.Before;
 import org.junit.Test;
+import org.uva.maven.plugin.CheckMojo;
 
 public class CheckMojoTest {
    private CheckMojoForTest foo;

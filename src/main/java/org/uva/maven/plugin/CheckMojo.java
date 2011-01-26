@@ -1,4 +1,4 @@
-package com.vidal.misc.plugin;
+package org.uva.maven.plugin;
 
 import java.util.Properties;
 import java.util.regex.Matcher;
