@@ -1,9 +1,13 @@
 package org.uva.maven.plugin;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
@@ -27,7 +31,7 @@ import org.apache.maven.settings.Server;
  * @executionStrategy once-per-session <- this annotation doesn't work...
  */
 public class CheckMojo extends AbstractMojo {
-   private static final String DEFAULT_PATTERN = "(_adm+)";
+   private static final String DEFAULT_PATTERN = "^.*_adm$";
 
    /**
     * @parameter
@@ -59,8 +63,7 @@ public class CheckMojo extends AbstractMojo {
 
       for (Object object : session.getSettings().getServers()) {
          if (checkPattern((Server) object)) {
-            getLog().info("An existing administrator login was found in server username configuration, continue anyway (Y/N)?");
-            if (!StringUtils.equalsIgnoreCase(System.console().readLine(), "y")) {
+            if (!StringUtils.equalsIgnoreCase(readLine(), "y")) {
                throw new MojoFailureException("Unable to continue build execution, stopped by user!");
             }
             break;
@@ -97,5 +100,29 @@ public class CheckMojo extends AbstractMojo {
          }
       }
       return false;
+   }
+
+   /**
+    * This method returns the user-entered response.<br/>
+    * It uses the old Java API because the plugin must be Java5 compliant.
+    * 
+    * @return the user-entered response.
+    * @throws MojoFailureException is an error occurred.
+    */
+   public String readLine() throws MojoFailureException {
+      String response = null;
+
+      getLog().info("An existing administrator login was found in server username configuration, continue anyway (y/N)?");
+
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      try {
+         response = br.readLine();
+      } catch (IOException ioe) {
+         getLog().error(ioe);
+         throw new MojoFailureException("An unexpected error occurred while reading user entry!");
+      } finally {
+         IOUtils.closeQuietly(br);
+      }
+      return response;
    }
 }
