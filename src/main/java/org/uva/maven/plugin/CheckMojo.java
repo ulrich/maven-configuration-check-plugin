@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoFailureException;
@@ -63,7 +62,7 @@ public class CheckMojo extends AbstractMojo {
 
       for (Object object : session.getSettings().getServers()) {
          if (checkPattern((Server) object)) {
-            if (!StringUtils.equalsIgnoreCase(readLine(), "y")) {
+            if (!"y".equalsIgnoreCase(readLine())) {
                throw new MojoFailureException("Unable to continue build execution, stopped by user!");
             }
             break;
@@ -79,7 +78,7 @@ public class CheckMojo extends AbstractMojo {
    protected boolean isNeeded() {
       Properties properties = session.getExecutionProperties();
       String key = (String) properties.get(this.getClass());
-      if (StringUtils.isEmpty(key)) {
+      if ((null == key) || (key.length() == 0)) {
          properties.put(this.getClass(), session.getStartTime().toString());
          return true;
       }
