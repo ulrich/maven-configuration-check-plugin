@@ -4,7 +4,7 @@
    <groupId>org.uva.maven.plugin</groupId>
    <artifactId>maven-configuration-check-plugin</artifactId>
    <packaging>maven-plugin</packaging>
-   <version>1.3-SNAPSHOT</version>
+   <version>1.3</version>
    <name>Maven Configuration Check Mojo</name>
 
    <scm>
